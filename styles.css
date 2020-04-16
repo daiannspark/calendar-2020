@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+thead, tbody {
+    text-align: center;
+}
+
+th {
+    padding: 10px;
+}
+
+.muted {
+    color: lightgrey;
+}

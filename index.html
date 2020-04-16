@@ -11,58 +11,79 @@
     <script src="https://momentjs.com/downloads/moment.js"></script>
 
 <script>
+
+    const monthFormatChange = (month) => {
+        let monthString = month.toString();
+        if(month < 10) {
+            monthString = "0" + monthString;
+        }
+        return monthString;
+
+    };
+
     $(document).ready ( () => {
         let selectYear = $('#selectYear');
 
         for (let year = 1901; year < 2100; year++) {
+
             selectYear.append( "<option value=" + year + ">" + year + "</option>" );
         }
 
         let monthSelect = $("#monthSelect");
         let date = moment("1901/01/01");
 
+
         for (let month = 1; month < 13; month++) {
 
-            // if(month < 10) {
-            //     month = "0" + month;
-            // }
-
-            monthSelect.append( "<option value=" + month + ">" + date.format('MMMM') + "</option>" );
+            monthSelect.append( "<option value=" + monthFormatChange(month) + ">" + date.format('MMMM') + "</option>" );
             date = date.add(1, "month")
         }
 
         selectYear.val(moment().year());
-        monthSelect.val(moment().month() + 1);
+        monthSelect.val(monthFormatChange(moment().month() + 1));
     });
 
     const changeCalendar = () => {
+
+        $(".daysContainer").empty();
         let year = $('#selectYear').val();
         let month = $('#monthSelect').val();
-        // let beginMonth = moment(year + "-" + month + "-01");
-        let beginMonth = moment(year + "-04-01T00:00:00.000Z");
+        let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");
         console.log(beginMonth, beginMonth.weekday());
 
+        let daysInMonth = beginMonth.daysInMonth();
+        console.log(daysInMonth);
         let firstDay = beginMonth.weekday();
-        let weekRow = $('<tr><td class="muted" id="day1"></td>' +
-            '<td class="muted" id="day2"></td>' +
-            '<td class="muted" id="day3"></td>' +
-            '<td class="muted" id="day4"></td>' +
-            '<td class="muted" id="day5"></td>' +
-            '<td class="muted" id="day6"></td>' +
+
+        if (firstDay === 0) {
+            firstDay = 7;
+        }
+
+        let weekRow = $('<tr><td id="day1"></td>' +
+            '<td id="day2"></td>' +
+            '<td id="day3"></td>' +
+            '<td id="day4"></td>' +
+            '<td id="day5"></td>' +
+            '<td id="day6"></td>' +
             '<td id="day7"></td></tr>');
 
         // мы не любим цикл for только для коллекций. а так любим и юзаем :)
-        let j = 1;
-        for (let day = firstDay; day <=7; day++) {
+        let day = firstDay;
+        let clonedWeekRow = $(weekRow[0]).clone();
+
+        for (let j = 1; j <= daysInMonth; j++) {
 
             let dayId = "#day" + day;
-            let daysDiv = $(dayId, weekRow);
+            let daysDiv = $(dayId, clonedWeekRow);
             daysDiv[0].innerText = j;
-            j++;
 
+            if (day === 7 || j === daysInMonth) {
+                $(".daysContainer").append(clonedWeekRow);
+                day = 0;
+                clonedWeekRow = $(weekRow[0]).clone();
+            }
+            day++;
         }
-
-        $(".daysContainer").append(weekRow[0]);
     }
 
 </script>

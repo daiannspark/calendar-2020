@@ -46,45 +46,76 @@
     const changeCalendar = () => {
 
         $(".daysContainer").empty();
+        $("#wholeYear").empty();
+
         let year = $('#selectYear').val();
         let month = $('#monthSelect').val();
-        let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");
-        console.log(beginMonth, beginMonth.weekday());
 
-        let daysInMonth = beginMonth.daysInMonth();
-        console.log(daysInMonth);
-        let firstDay = beginMonth.weekday();
 
-        if (firstDay === 0) {
-            firstDay = 7;
+        buildMonth(year, month, $(".daysContainer"));
+
+        let dayNames = $("<tr>" +
+            "<th>Mo</th>" +
+            "<th>Tu</th>" +
+            "<th>We</th>" +
+            "<th>Th</th>" +
+            "<th>Fr</th>" +
+            "<th>Sa</th>" +
+            "<th>Su</th>" +
+            "</tr>");
+
+        let wholeYear = $("#wholeYear");
+
+        for (let y = 1; y <= 12; y++){
+            let startDate = moment("1901/" + monthFormatChange(y) + "/01");
+            wholeYear.append("<h3>" + startDate.format("MMMM") + "</h3>");
+            wholeYear.append(dayNames.clone());
+            buildMonth(year, monthFormatChange(y), wholeYear);
         }
+     };
 
-        let weekRow = $('<tr><td id="day1"></td>' +
-            '<td id="day2"></td>' +
-            '<td id="day3"></td>' +
-            '<td id="day4"></td>' +
-            '<td id="day5"></td>' +
-            '<td id="day6"></td>' +
-            '<td id="day7"></td></tr>');
 
-        // мы не любим цикл for только для коллекций. а так любим и юзаем :)
-        let day = firstDay;
-        let clonedWeekRow = $(weekRow[0]).clone();
+        const buildMonth = (year, month, parentElement) => {
+            let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");
+            // console.log(beginMonth, beginMonth.weekday());
 
-        for (let j = 1; j <= daysInMonth; j++) {
+            let daysInMonth = beginMonth.daysInMonth();
+            // console.log(daysInMonth);
+            let firstDay = beginMonth.weekday();
 
-            let dayId = "#day" + day;
-            let daysDiv = $(dayId, clonedWeekRow);
-            daysDiv[0].innerText = j;
-
-            if (day === 7 || j === daysInMonth) {
-                $(".daysContainer").append(clonedWeekRow);
-                day = 0;
-                clonedWeekRow = $(weekRow[0]).clone();
+            if (firstDay === 0) {
+                firstDay = 7;
             }
-            day++;
+
+            let weekRow = $('<tr><td id="day1"></td>' +
+                '<td id="day2"></td>' +
+                '<td id="day3"></td>' +
+                '<td id="day4"></td>' +
+                '<td id="day5"></td>' +
+                '<td id="day6"></td>' +
+                '<td id="day7"></td></tr>');
+
+            let day = firstDay;
+            let clonedWeekRow = $(weekRow[0]).clone();
+
+            for (let j = 1; j <= daysInMonth; j++) {
+
+                let dayId = "#day" + day;
+                let daysDiv = $(dayId, clonedWeekRow);
+                daysDiv[0].innerText = j;
+
+                if (day === 7 || j === daysInMonth) {
+                    parentElement.append(clonedWeekRow);
+                    day = 0;
+                    clonedWeekRow = $(weekRow[0]).clone();
+                }
+                day++;
         }
     }
+
+
+
+
 
 </script>
 
@@ -118,149 +149,87 @@
                 </tr>
                 </thead>
                 <tbody class="daysContainer">
-<!--                <tr>-->
-<!--                    <td class="muted" id="day1">24</td>-->
-<!--                    <td class="muted" id="day2">25</td>-->
-<!--                    <td class="muted" id="day3">26</td>-->
-<!--                    <td class="muted" id="day4">27</td>-->
-<!--                    <td class="muted" id="day5">28</td>-->
-<!--                    <td class="muted" id="day6">29</td>-->
-<!--                    <td id="day7">1</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>2</td>-->
-<!--                    <td>3</td>-->
-<!--                    <td>4</td>-->
-<!--                    <td>5</td>-->
-<!--                    <td>6</td>-->
-<!--                    <td>7</td>-->
-<!--                    <td>8</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>9</td>-->
-<!--                    <td>10</td>-->
-<!--                    <td>11</td>-->
-<!--                    <td>12</td>-->
-<!--                    <td>13</td>-->
-<!--                    <td>14</td>-->
-<!--                    <td>15</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>16</td>-->
-<!--                    <td>17</td>-->
-<!--                    <td>18</td>-->
-<!--                    <td>19</td>-->
-<!--                    <td>20</td>-->
-<!--                    <td>21</td>-->
-<!--                    <td>22</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>23</td>-->
-<!--                    <td>24</td>-->
-<!--                    <td>25</td>-->
-<!--                    <td>26</td>-->
-<!--                    <td>27</td>-->
-<!--                    <td>28</td>-->
-<!--                    <td>29</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>30</td>-->
-<!--                    <td>31</td>-->
-<!--                    <td class="muted">1</td>-->
-<!--                    <td class="muted">2</td>-->
-<!--                    <td class="muted">3</td>-->
-<!--                    <td class="muted">4</td>-->
-<!--                    <td class="muted">5</td>-->
-<!--                </tr>-->
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<div id="wholeYear"></div>
 </body>
 </html>
 
 
 
-<!--<div class="container">-->
-<!--    <div class="row">-->
-<!--        <div class="span12">-->
-<!--            <table class="table-condensed table-bordered table-striped">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th colspan="7">-->
-<!--                        <span class="btn-group">-->
-<!--                        	<a class="btn active">March 2020</a>-->
-<!--                        </span>-->
-<!--                    </th>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <th>Mo</th>-->
-<!--                    <th>Tu</th>-->
-<!--                    <th>We</th>-->
-<!--                    <th>Th</th>-->
-<!--                    <th>Fr</th>-->
-<!--                    <th>Sa</th>-->
-<!--                    <th>Su</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr>-->
-<!--                    <td class="muted">24</td>-->
-<!--                    <td class="muted">25</td>-->
-<!--                    <td class="muted">26</td>-->
-<!--                    <td class="muted">27</td>-->
-<!--                    <td class="muted">28</td>-->
-<!--                    <td class="muted">29</td>-->
-<!--                    <td>1</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>2</td>-->
-<!--                    <td>3</td>-->
-<!--                    <td>4</td>-->
-<!--                    <td>5</td>-->
-<!--                    <td>6</td>-->
-<!--                    <td>7</td>-->
-<!--                    <td>8</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>9</td>-->
-<!--                    <td>10</td>-->
-<!--                    <td>11</td>-->
-<!--                    <td>12</td>-->
-<!--                    <td>13</td>-->
-<!--                    <td>14</td>-->
-<!--                    <td>15</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>16</td>-->
-<!--                    <td>17</td>-->
-<!--                    <td>18</td>-->
-<!--                    <td>19</td>-->
-<!--                    <td>20</td>-->
-<!--                    <td>21</td>-->
-<!--                    <td>22</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>23</td>-->
-<!--                    <td>24</td>-->
-<!--                    <td>25</td>-->
-<!--                    <td>26</td>-->
-<!--                    <td>27</td>-->
-<!--                    <td>28</td>-->
-<!--                    <td>29</td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>30</td>-->
-<!--                    <td>31</td>-->
-<!--                    <td class="muted">1</td>-->
-<!--                    <td class="muted">2</td>-->
-<!--                    <td class="muted">3</td>-->
-<!--                    <td class="muted">4</td>-->
-<!--                    <td class="muted">5</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+
+<!--const monthFormatChange = (month) => {-->
+<!--let monthString = month.toString();-->
+<!--if(month < 10) {-->
+<!--monthString = "0" + monthString;-->
+<!--}-->
+<!--return monthString;-->
+
+<!--};-->
+
+<!--$(document).ready ( () => {-->
+<!--let selectYear = $('#selectYear');-->
+
+<!--for (let year = 1901; year < 2100; year++) {-->
+
+<!--selectYear.append( "<option value=" + year + ">" + year + "</option>" );-->
+<!--}-->
+
+<!--let monthSelect = $("#monthSelect");-->
+<!--let date = moment("1901/01/01");-->
+
+
+<!--for (let month = 1; month < 13; month++) {-->
+
+<!--monthSelect.append( "<option value=" + monthFormatChange(month) + ">" + date.format('MMMM') + "</option>" );-->
+<!--date = date.add(1, "month")-->
+<!--}-->
+
+<!--selectYear.val(moment().year());-->
+<!--monthSelect.val(monthFormatChange(moment().month() + 1));-->
+<!--});-->
+
+<!--const changeCalendar = () => {-->
+
+<!--$(".daysContainer").empty();-->
+<!--let year = $('#selectYear').val();-->
+<!--let month = $('#monthSelect').val();-->
+<!--let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");-->
+<!--console.log(beginMonth, beginMonth.weekday());-->
+
+<!--let daysInMonth = beginMonth.daysInMonth();-->
+<!--console.log(daysInMonth);-->
+<!--let firstDay = beginMonth.weekday();-->
+
+<!--if (firstDay === 0) {-->
+<!--firstDay = 7;-->
+<!--}-->
+
+<!--let weekRow = $('<tr><td id="day1"></td>' +-->
+<!--    '<td id="day2"></td>' +-->
+<!--    '<td id="day3"></td>' +-->
+<!--    '<td id="day4"></td>' +-->
+<!--    '<td id="day5"></td>' +-->
+<!--    '<td id="day6"></td>' +-->
+<!--    '<td id="day7"></td></tr>');-->
+
+<!--let day = firstDay;-->
+<!--let clonedWeekRow = $(weekRow[0]).clone();-->
+
+<!--for (let j = 1; j <= daysInMonth; j++) {-->
+
+<!--let dayId = "#day" + day;-->
+<!--let daysDiv = $(dayId, clonedWeekRow);-->
+<!--daysDiv[0].innerText = j;-->
+
+<!--if (day === 7 || j === daysInMonth) {-->
+<!--$(".daysContainer").append(clonedWeekRow);-->
+<!--day = 0;-->
+<!--clonedWeekRow = $(weekRow[0]).clone();-->
+<!--}-->
+<!--day++;-->
+<!--}-->

@@ -1,3 +1,7 @@
+body {
+    background-image: url("asfalt-dark.png");
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -15,3 +19,19 @@ th {
 .muted {
     color: lightgrey;
 }
+
+#wholeYear {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+#wholeYear table {
+    margin: 20px;
+}
+
+select {
+    padding: 2px;
+}
+

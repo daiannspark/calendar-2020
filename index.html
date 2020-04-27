@@ -14,7 +14,7 @@
 
     const monthFormatChange = (month) => {
         let monthString = month.toString();
-        if(month < 10) {
+        if (month < 10) {
             monthString = "0" + monthString;
         }
         return monthString;
@@ -25,16 +25,13 @@
         let selectYear = $('#selectYear');
 
         for (let year = 1901; year < 2100; year++) {
-
             selectYear.append( "<option value=" + year + ">" + year + "</option>" );
         }
 
         let monthSelect = $("#monthSelect");
         let date = moment("1901/01/01");
 
-
         for (let month = 1; month < 13; month++) {
-
             monthSelect.append( "<option value=" + monthFormatChange(month) + ">" + date.format('MMMM') + "</option>" );
             date = date.add(1, "month")
         }
@@ -55,32 +52,46 @@
         buildMonth(year, month, $(".daysContainer"));
 
         let dayNames = $("<tr>" +
-            "<th>Mo</th>" +
-            "<th>Tu</th>" +
-            "<th>We</th>" +
-            "<th>Th</th>" +
-            "<th>Fr</th>" +
-            "<th>Sa</th>" +
-            "<th>Su</th>" +
+            "<th>Mon</th>" +
+            "<th>Tue</th>" +
+            "<th>Wed</th>" +
+            "<th>Thu</th>" +
+            "<th>Fri</th>" +
+            "<th>Sat</th>" +
+            "<th>Sun</th>" +
             "</tr>");
 
         let wholeYear = $("#wholeYear");
 
         for (let y = 1; y <= 12; y++){
+            let month = $('<table class="table-condensed table-bordered table-striped"></table>');
             let startDate = moment("1901/" + monthFormatChange(y) + "/01");
-            wholeYear.append("<h3>" + startDate.format("MMMM") + "</h3>");
-            wholeYear.append(dayNames.clone());
-            buildMonth(year, monthFormatChange(y), wholeYear);
+            month.append("<tr><td colspan='7'><h3>" + startDate.format("MMMM") + "</h3></td></tr>");
+
+
+            // wholeYear.append("<h3>" + startDate.format("MMMM") + "</h3>");
+            month.append(dayNames.clone());
+
+            buildMonth(year, monthFormatChange(y), month);
+
+            wholeYear.append(month);
         }
      };
 
 
-        const buildMonth = (year, month, parentElement) => {
+    function isCurrentDay(day, month, year) {
+        day = parseInt(day);
+        month = parseInt(month);
+        year = parseInt(year);
+        let currentDate = moment();
+
+        return day === currentDate.date() && month === currentDate.month() + 1 && year === currentDate.year();
+    }
+
+    const buildMonth = (year, month, parentElement) => {
             let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");
-            // console.log(beginMonth, beginMonth.weekday());
 
             let daysInMonth = beginMonth.daysInMonth();
-            // console.log(daysInMonth);
             let firstDay = beginMonth.weekday();
 
             if (firstDay === 0) {
@@ -102,6 +113,11 @@
 
                 let dayId = "#day" + day;
                 let daysDiv = $(dayId, clonedWeekRow);
+
+                if(isCurrentDay(j, month, year)) {
+                    daysDiv[0].style.fontWeight = "900";
+                }
+
                 daysDiv[0].innerText = j;
 
                 if (day === 7 || j === daysInMonth) {
@@ -114,14 +130,10 @@
     }
 
 
-
-
-
 </script>
 
 </head>
 <body>
-
 <div class="container">
     <div class="row">
         <div class="span12">
@@ -139,13 +151,13 @@
                     </th>
                 </tr>
                 <tr>
-                    <th>Mo</th>
-                    <th>Tu</th>
-                    <th>We</th>
-                    <th>Th</th>
-                    <th>Fr</th>
-                    <th>Sa</th>
-                    <th>Su</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
                 </tr>
                 </thead>
                 <tbody class="daysContainer">
@@ -159,77 +171,3 @@
 </body>
 </html>
 
-
-
-
-<!--const monthFormatChange = (month) => {-->
-<!--let monthString = month.toString();-->
-<!--if(month < 10) {-->
-<!--monthString = "0" + monthString;-->
-<!--}-->
-<!--return monthString;-->
-
-<!--};-->
-
-<!--$(document).ready ( () => {-->
-<!--let selectYear = $('#selectYear');-->
-
-<!--for (let year = 1901; year < 2100; year++) {-->
-
-<!--selectYear.append( "<option value=" + year + ">" + year + "</option>" );-->
-<!--}-->
-
-<!--let monthSelect = $("#monthSelect");-->
-<!--let date = moment("1901/01/01");-->
-
-
-<!--for (let month = 1; month < 13; month++) {-->
-
-<!--monthSelect.append( "<option value=" + monthFormatChange(month) + ">" + date.format('MMMM') + "</option>" );-->
-<!--date = date.add(1, "month")-->
-<!--}-->
-
-<!--selectYear.val(moment().year());-->
-<!--monthSelect.val(monthFormatChange(moment().month() + 1));-->
-<!--});-->
-
-<!--const changeCalendar = () => {-->
-
-<!--$(".daysContainer").empty();-->
-<!--let year = $('#selectYear').val();-->
-<!--let month = $('#monthSelect').val();-->
-<!--let beginMonth = moment(year + "-" + month + "-01T00:00:00.000Z");-->
-<!--console.log(beginMonth, beginMonth.weekday());-->
-
-<!--let daysInMonth = beginMonth.daysInMonth();-->
-<!--console.log(daysInMonth);-->
-<!--let firstDay = beginMonth.weekday();-->
-
-<!--if (firstDay === 0) {-->
-<!--firstDay = 7;-->
-<!--}-->
-
-<!--let weekRow = $('<tr><td id="day1"></td>' +-->
-<!--    '<td id="day2"></td>' +-->
-<!--    '<td id="day3"></td>' +-->
-<!--    '<td id="day4"></td>' +-->
-<!--    '<td id="day5"></td>' +-->
-<!--    '<td id="day6"></td>' +-->
-<!--    '<td id="day7"></td></tr>');-->
-
-<!--let day = firstDay;-->
-<!--let clonedWeekRow = $(weekRow[0]).clone();-->
-
-<!--for (let j = 1; j <= daysInMonth; j++) {-->
-
-<!--let dayId = "#day" + day;-->
-<!--let daysDiv = $(dayId, clonedWeekRow);-->
-<!--daysDiv[0].innerText = j;-->
-
-<!--if (day === 7 || j === daysInMonth) {-->
-<!--$(".daysContainer").append(clonedWeekRow);-->
-<!--day = 0;-->
-<!--clonedWeekRow = $(weekRow[0]).clone();-->
-<!--}-->
-<!--day++;-->
-<!--}-->
